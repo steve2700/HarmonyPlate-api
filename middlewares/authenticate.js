@@ -1,13 +1,30 @@
-// middlewares/authenticate.js
-const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-const requireAuth = passport.authenticate('jwt', { session: false });
-const requireAdmin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    return next();
+dotenv.config();
+
+const authMiddleware = (req, res, next) => {
+  const token = req.header('Authorization');
+
+  // Log the incoming token for debugging
+  console.log('Incoming Token:', token);
+
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. No token provided.' });
   }
-  return res.status(403).json({ error: 'Access Denied. Admin privileges required.' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: 'Invalid token.' });
+  }
 };
 
-module.exports = { requireAuth, requireAdmin };
+module.exports = authMiddleware;
+
+
 
