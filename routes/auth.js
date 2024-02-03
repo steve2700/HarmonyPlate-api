@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const User = require('../models/User');
-const { requireAuth } = require('../middlewares/authenticate');
+
 require('dotenv').config();
 
 const jwtSecret = process.env.JWT_SECRET;
