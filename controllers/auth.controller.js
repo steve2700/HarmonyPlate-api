@@ -131,3 +131,44 @@ exports.login = async (req, res, next) => {
   }
 };
 
+
+// forgot Password
+exports.forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    // Generate password reset token
+    const passwordResetToken = crypto.randomBytes(20).toString('hex');
+    user.passwordResetToken = passwordResetToken;
+    user.passwordResetExpires = Date.now() + 3600000; // Token valid for 1 hour
+    await user.save();
+
+    // Send password reset link
+    const resetLink = `${process.env.APP_BASE_URL}/auth/reset-password/${passwordResetToken}`;
+
+    const mailOptions = {
+      from: 'harmonyplateenvironments@gmail.com',
+      to: user.email,
+      subject: 'HarmonyPlate - Reset Your Password',
+      html: `Click the following link to reset your password: <a href="${resetLink}">${resetLink}</a>`,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        console.error('Password reset email failed to send:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      res.json({ message: 'Password reset instructions sent to your email.' });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
