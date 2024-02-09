@@ -1,15 +1,15 @@
 // server.js
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/auth');
+
+dotenv.config();
 
 // Load environment variables
-const {
-  MONGODB_URI,
-  PORT,
-} = process.env;
+const { MONGODB_URI, PORT } = process.env;
 
 // Create Express app
 const app = express();
@@ -19,12 +19,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI, {
-  //useNewUrlParser: true,
-  //useUnifiedTopology: true,
-  //useCreateIndex: true,
+  // Add your MongoDB configuration options if needed
 });
 
 const db = mongoose.connection;
@@ -34,17 +31,15 @@ db.once('open', () => {
   console.log('Connected to MongoDB, you can now start to test your endpoint');
 });
 
-
 // Routes
 app.get('/', (req, res) => res.send('Hello HarmonyPlate!'));
 
 // Authentication routes
-const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
 
 // Other routes (add your other routes here)
 
 // Start server
-const PORT_NUMBER = PORT || 3005;  // Use the provided port or default to 3005
+const PORT_NUMBER = PORT || 3005; // Use the provided port or default to 3005
 app.listen(PORT_NUMBER, () => console.log(`Server running on port ${PORT_NUMBER}`));
 
