@@ -170,5 +170,31 @@ exports.forgotPassword = async (req, res, next) => {
     next(error);
   }
 };
+exports.resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() }, // Check if the token is still valid
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Invalid or expired password reset token.' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Password reset successful. You can now log in with your new password.' });
+  } catch (error) {
+    console.error('Password reset failed:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
