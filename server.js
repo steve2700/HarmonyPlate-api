@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
-
+const organizationRoutes = require('/.routes/organization');
 dotenv.config();
 
 // Load environment variables
@@ -37,7 +37,7 @@ app.get('/', (req, res) => res.send('Hello HarmonyPlate!'));
 // Authentication routes
 app.use('/auth', authRoutes);
 
-// Other routes (add your other routes here)
+app.use('organization/auth', organizationRoutes);
 
 // Start server
 const PORT_NUMBER = PORT || 3005; // Use the provided port or default to 3005
