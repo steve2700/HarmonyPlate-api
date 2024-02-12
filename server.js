@@ -38,7 +38,8 @@ app.get('/', (req, res) => res.send('Hello HarmonyPlate!'));
 // Authentication routes
 app.use('/auth', authRoutes);
 
-app.use('organization/auth', organizationRoutes);
+app.use('/organization/auth', organizationRoutes);
+
 
 // Start server
 const PORT_NUMBER = PORT || 3005; // Use the provided port or default to 3005

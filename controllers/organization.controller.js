@@ -8,6 +8,16 @@ require('dotenv').config();
 
 const jwtSecret = process.env.JWT_SECRET;
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
+    pass: process.env.EMAIL_APP_PASSWORD,
+  },
+});
+
+
 // Signup
 exports.signup = async (req, res, next) => {
   const { organizationName, password, email, contactInformation, website, missionStatement } = req.body;
