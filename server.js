@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
-const organizationRoutes = require('/.routes/organization');
+const organizationRoutes = require('./routes/organization');
+
 dotenv.config();
 
 // Load environment variables
